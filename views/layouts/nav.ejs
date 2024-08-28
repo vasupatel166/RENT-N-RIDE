@@ -1,0 +1,29 @@
+<!-- Header -->
+<header>
+  <nav>
+    <ul class="nav-bar">
+      <li class="logo">
+        <a href="/"
+          ><img src="/assets/img/logo.svg" alt="Rent-N-Ride Logo"
+        /></a>
+      </li>
+      <input type="checkbox" id="check" />
+      <span class="menu">
+        <% if(loggedIn) { %>
+        <li><a href="/">Add Car</a></li>
+        <li><a href="/cars-on-rent">Cars on rent</a></li>
+        <li><a href="/reports">Reports</a></li>
+        <li><a href="/logout">Logout</a></li>
+        <% } else { %>
+        <li><a href="/login">Login</a></li>
+        <% } %>
+        <label for="check" class="close-menu"
+          ><ion-icon name="close-outline"></ion-icon
+        ></label>
+      </span>
+      <label for="check" class="open-menu"
+        ><ion-icon name="menu"></ion-icon
+      ></label>
+    </ul>
+  </nav>
+</header>

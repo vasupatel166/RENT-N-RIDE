@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("layouts/head") %>
+
+  <body>
+    <div class="report-container">
+      <header>
+        <div class="company-logo">
+          <img src="assets/img/logo.svg" alt="Rent-N-Ride Logo" />
+        </div>
+        <div class="company-info">
+          <h1>RENT-N-RIDE</h1>
+          <p>
+            Conestoga College, 108 University Ave, Waterloo, ONTARIO-N2J 2W2
+          </p>
+        </div>
+      </header>
+      <h2>BOOKED CARS REPORT</h2>
+      <table class="booked-cars">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>PHOTO</th>
+            <th>CAR</th>
+            <th>RENTAL START</th>
+            <th>RENTAL END</th>
+            <th>CUSTOMER NAME</th>
+            <th>CUSTOMER EMAIL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (reportData && reportData.length > 0) { %> <% for (let i = 0; i
+          < reportData.length; i++) { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td>
+              <% if (reportData[i].image) { %>
+              <img src="<%= reportData[i].image %>" alt="Car Image" />
+              <% } %>
+            </td>
+            <td>
+              <%= reportData[i].carMake %> <%= reportData[i].carModel %> <%=
+              reportData[i].year %>
+            </td>
+            <td>
+              <%= reportData[i].rental_start_date %> <%=
+              reportData[i].rental_start_time %>
+            </td>
+            <td>
+              <%= reportData[i].rental_end_date %> <%=
+              reportData[i].rental_end_time %>
+            </td>
+            <td>
+              <%= reportData[i].customer_firstname %> <%=
+              reportData[i].customer_lastname %>
+            </td>
+            <td><%= reportData[i].customer_email %></td>
+          </tr>
+          <% } %> <% } else { %>
+          <tr>
+            <td colspan="7">No data available</td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Scripts -->
+    <%- include("layouts/script") %>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<!-- Footer -->
+<footer>
+  <% if(loggedIn) { %>
+  <div class="footer-container">
+    <div class="footer-logo">
+      <a href="/"><img src="/assets/img/logo.svg" alt="Rent-N-Ride Logo" /></a>
+    </div>
+    <nav>
+      <div class="page-links-heading">
+        <h2>Page Links</h2>
+      </div>
+      <ul class="page-links">
+        <li><a href="/">Add Car</a></li>
+        <li><a href="/cars-on-rent">Cars on rent</a></li>
+        <li><a href="/reports">Reports</a></li>
+      </ul>
+    </nav>
+  </div>
+  <% } %>
+  <div class="copyright">
+    <% let year = new Date().getFullYear(); %>
+    <p>Copyright &copy; <%= year %> Rent-N-Ride. All rights reserved</p>
+  </div>
+</footer>

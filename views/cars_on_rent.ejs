@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("layouts/head") %>
+
+  <body>
+    <%- include("layouts/nav") %>
+
+    <!-- Main -->
+    <main>
+      <section>
+        <h2 class="heading">All cars on rent</h2>
+        <div class="car-cards">
+          <% for(var i=0; i < carsData.length; i++) { %>
+          <div class="car-card">
+            <img
+              src="assets/car-images/<%= carsData[i].image ? carsData[i].image : 'no-image.jpg' %>"
+              alt="Car Image"
+            />
+            <div class="car-details">
+              <h2>
+                <%= carsData[i].car_make_name %> <%= carsData[i].car_model_name
+                %>
+              </h2>
+              <ul>
+                <li class="icons icon_1">
+                  <img src="assets/icons/color_icon.png" />
+                  <p><%= carsData[i].color %></p>
+                </li>
+                <li class="icons icon_2">
+                  <img src="assets/icons/engine_icon.png" />
+                  <p><%= carsData[i].year %></p>
+                </li>
+                <li class="icons icon_3">
+                  <img src="assets/icons/gas_icon.png" />
+                  <p><%= carsData[i].fuel_type %></p>
+                </li>
+                <li class="icons icon_4">
+                  <img src="assets/icons/mileage_icon.png" />
+                  <p><%= carsData[i].mileage %> kms</p>
+                </li>
+                <li class="icons icon_5">
+                  <img src="assets/icons/seats_icon.png" />
+                  <p><%= carsData[i].seats %></p>
+                </li>
+              </ul>
+              <hr />
+              <div class="card-bottom d-flex justify-content-between mt-4">
+                <h2>$<%= carsData[i].rental_rate %>/day</h2>
+                <form action="/getCarDetails" method="post">
+                  <button
+                    type="submit"
+                    id="carEditButton"
+                    name="carId"
+                    value="<%= carsData[i]._id %>"
+                    class="btn"
+                  >
+                    Edit details
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer-->
+    <%- include("layouts/footer") %>
+
+    <!-- Scripts -->
+    <%- include("layouts/script") %>
+
+    <!-- <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                
+                const carEditButton = document.getElementById("carEditButton");
+                const carId = "";
+
+                carEditButton.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    
+                    if(carEditButton.value != ""){
+                        carId = carEditButton.value;
+                    }
+                  
+                    console.log("Car ID ", carId);
+      
+                    try {
+                        const response = await fetch("/getCarDetails", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                carId: carId
+                            }),
+                        });
+                    } catch (error) {
+                        console.error("Error:", error);
+                    }
+                })
+            });
+      
+        </script> -->
+  </body>
+</html>

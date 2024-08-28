@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("layouts/head") %>
+
+  <body>
+    <%- include("layouts/nav") %>
+
+    <!-- Main -->
+    <main>
+      <section class="reports-section">
+        <h2 class="heading">Generate Report</h2>
+        <form
+          action="/downloadReport"
+          method="post"
+          id="report-download"
+          clas="row g-3 justify-content-center reports-form"
+        >
+          <div class="col-md-4">
+            <select
+              id="inputReportType"
+              class="form-select"
+              name="inputReportType"
+            >
+              <option>Choose Report</option>
+              <option value="Booked Cars Report">Booked Cars</option>
+            </select>
+          </div>
+          <div class="col-12 mt-4 mb-4">
+            <button
+              type="submit"
+              id="btn_download_report"
+              class="btn btn-primary"
+            >
+              Download
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+    <!-- Footer-->
+    <%- include("layouts/footer") %>
+
+    <!-- Scripts -->
+    <%- include("layouts/script") %>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const reportInput = document.getElementById("inputReportType");
+
+        reportInput.addEventListener("change", async (e) => {
+          e.preventDefault();
+
+          console.log("Report Changed");
+
+          try {
+            const response = await fetch("/getCarDetails", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                report_type: document.querySelector('[name="inputReportType"]')
+                  .value,
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error("Failed to fetch report data");
+            } else {
+              let reportData = await response.json();
+
+              console.log("Report Data: ", reportData);
+
+              const Data = reportData; // Your object data
+
+              // Convert the object to a JSON string
+              const jsonString = JSON.stringify(Data);
+
+              // Encode the JSON string to make it URL-safe
+              const encodedJsonString = encodeURIComponent(jsonString);
+
+              let form = document.getElementById("report-download");
+
+              const queryString = encodedJsonString;
+
+              form.action = "/downloadReport?reportData=" + queryString;
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
