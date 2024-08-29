@@ -40,21 +40,26 @@
                 </div>
 
                 <!-- Password Field -->
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                   <input
                     type="password"
-                    class="form-control"
+                    class="form-control pe-5"
                     id="admin_password"
                     name="admin_password"
                     value="<%= password %>"
                     placeholder="Password"
                   />
+                  <ion-icon
+                    name="eye-outline"
+                    class="eye-icon position-absolute p-2 end-0 top-50 translate-middle-y cursor-pointer"
+                    id="togglePassword"
+                  ></ion-icon>
                 </div>
 
                 <!-- Error message -->
                 <div class="mb-3 text-center">
                   <% if (login_error) { %>
-                  <div class="alert alert-danger"><%= login_error %></div>
+                  <div class="text-start text-danger"><%= login_error %></div>
                   <% } %>
                 </div>
 
@@ -90,5 +95,27 @@
 
     <!-- Scripts -->
     <%- include("layouts/script") %>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const togglePassword = document.querySelector("#togglePassword");
+        const passwordField = document.querySelector("#admin_password");
+
+        togglePassword.addEventListener("click", function () {
+          const type =
+            passwordField.getAttribute("type") === "password"
+              ? "text"
+              : "password";
+          passwordField.setAttribute("type", type);
+
+          // Toggle the eye icon
+          const icon = this;
+          if (icon.getAttribute("name") === "eye-outline") {
+            icon.setAttribute("name", "eye-off-outline");
+          } else {
+            icon.setAttribute("name", "eye-outline");
+          }
+        });
+      });
+    </script>
   </body>
 </html>
