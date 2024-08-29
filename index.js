@@ -60,7 +60,7 @@ app.get("/", adminAuthMiddleware, addCarPageController)
 app.get("/cars-on-rent", adminAuthMiddleware, viewCarsRentPageController)
 
 // 3. Get Cars Details Page
-app.post("/getCarDetails", getCarDetailsController)
+app.post("/getCarDetails", adminAuthMiddleware, getCarDetailsController)
 
 // 4. Reports Page 
 app.get("/reports", adminAuthMiddleware, reportsPageController)
@@ -80,16 +80,16 @@ app.get("/login", loginPageController)
 app.get("/signup", signupPageController)
 
 // 7. Logout Admin
-app.get('/logout', adminLogoutController)
+app.get('/logout', adminAuthMiddleware, adminLogoutController)
 
 app.post("/login", loginAdminController)
 
 // 8. Controller to add new user in database
 app.post("/signup", signupAdminController)
 
-app.post("/storeCarDetails", storeCarDetailsController)
+app.post("/store-car-details", adminAuthMiddleware, storeCarDetailsController)
 
-app.post("/updateCarDetails", updateCarDetailsController)
+app.post("/update-car-details", adminAuthMiddleware, updateCarDetailsController)
 
 app.listen(env.parsed.PORT, () => {
     console.log("Application link : http://localhost:" + env.parsed.PORT + "/");

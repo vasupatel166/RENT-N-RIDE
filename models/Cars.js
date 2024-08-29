@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const Decimal128 = mongoose.Types.Decimal128;
 
 //create schema
 const carsSchema = new Schema({
@@ -27,7 +28,7 @@ const carsSchema = new Schema({
         type: Number
     },
     rental_rate: {
-        type: Number
+        type: Decimal128
     },
     is_available: {
         type: Boolean

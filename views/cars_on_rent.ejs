@@ -8,6 +8,7 @@
     <!-- Main -->
     <main>
       <section>
+        <% if (carsData.length > 0) { %>
         <h2 class="heading">All cars on rent</h2>
         <div class="car-cards">
           <% for(var i=0; i < carsData.length; i++) { %>
@@ -62,6 +63,16 @@
           </div>
           <% } %>
         </div>
+        <% } else { %>
+        <div class="no-data text-center">
+          <img
+            src="assets/car-images/no-data.svg"
+            alt="No Data"
+            class="img-fluid"
+            style="max-width: 500px"
+          />
+        </div>
+        <% } %>
       </section>
     </main>
 
@@ -70,38 +81,5 @@
 
     <!-- Scripts -->
     <%- include("layouts/script") %>
-
-    <!-- <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                
-                const carEditButton = document.getElementById("carEditButton");
-                const carId = "";
-
-                carEditButton.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    
-                    if(carEditButton.value != ""){
-                        carId = carEditButton.value;
-                    }
-                  
-                    console.log("Car ID ", carId);
-      
-                    try {
-                        const response = await fetch("/getCarDetails", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                carId: carId
-                            }),
-                        });
-                    } catch (error) {
-                        console.error("Error:", error);
-                    }
-                })
-            });
-      
-        </script> -->
   </body>
 </html>

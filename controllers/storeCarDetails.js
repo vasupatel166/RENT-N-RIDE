@@ -1,61 +1,49 @@
 const Cars = require("../models/Cars");
 const path = require('path');
+const CarsMake = require("../models/CarsMake");
+const CarsModel = require("../models/CarsModel");
+const { validateCarDetails, getPrevoiusCarDetailsOnError } = require("../utils/validation");
 
 module.exports = async (req, res) => {
     try {
-        const { inputCarMake, inputCarModel, inputCarYear, inputCarColor, inputCarSeats, inputCarFuelType, inputCarMileage, inputCarRent, inputCarImage } = req.body;
 
-        let image = inputCarImage;
+        const carDetails = req.body;
 
-        // Move image to the correct directory if it exists
+        console.log(" Car Details ", carDetails);
+
+        const { errors, hasError } = await validateCarDetails(carDetails);
+
+        if (hasError) {
+            const carsData = await getPrevoiusCarDetailsOnError(carDetails);
+
+            res.render("add_car", {
+                carsData: carsData,
+                carMakeId: carDetails.inputCarMake || "",
+                carModelId: carDetails.inputCarModel || "",
+                carsMakeData: "",
+                storeCarDetails_validation: true,
+                car_error: Object.values(errors).find(error => error !== "")
+            });
+
+            return;
+        }
+
+        let image = req.files.inputCarImage;
+
         if (image) {
             image.mv(path.resolve(__dirname, '../', 'public/assets/car-images', image.name));
         }
 
-        // Get the current year for validation
-        const currentYear = new Date().getFullYear();
-
-        // Validate input fields
-        let errors = {
-            inputCarMake: !inputCarMake ? "Please enter car make" : "",
-            inputCarModel: !inputCarModel ? "Please enter car model" : "",
-            inputCarYear: !inputCarYear || inputCarYear.length !== 4 || inputCarYear < 1000 || inputCarYear > currentYear ? `Please enter a valid car year (between 1000 and ${currentYear})` : "",
-            inputCarColor: !inputCarColor ? "Please enter car color" : "",
-            inputCarSeats: !inputCarSeats || inputCarSeats < 2 ? "Please enter a valid number of seats (at least 2)" : "",
-            inputCarFuelType: !inputCarFuelType ? "Please enter fuel type" : "",
-            inputCarMileage: !inputCarMileage ? "Please enter car mileage" : "",
-            inputCarRent: !inputCarRent || inputCarRent < 20 ? "Please enter a valid car rent (at least 20)" : ""
-        };
-
-        // Check if there are any validation errors
-        const hasError = Object.values(errors).some(error => error !== "");
-
-        if (hasError) {
-            res.render("/", {
-                car_error: Object.values(errors).find(error => error !== ""),
-                car_make: inputCarMake || "",
-                car_model: inputCarModel || "",
-                car_year: inputCarYear || "",
-                car_color: inputCarColor || "",
-                car_seats: inputCarSeats || "",
-                car_fuel_type: inputCarFuelType || "",
-                car_mileage: inputCarMileage || "",
-                car_rent: inputCarRent || "",
-                car_image: image ? image.name : ""
-            });
-            return;
-        }
-
         // Create a new car entry
         const newCar = await Cars.create({
-            car_make_id: inputCarMake,
-            car_model_id: inputCarModel,
-            year: inputCarYear,
-            color: inputCarColor,
-            seats: inputCarSeats,
-            fuel_type: inputCarFuelType,
-            mileage: inputCarMileage,
-            rental_rate: inputCarRent,
+            car_make_id: carDetails.inputCarMake,
+            car_model_id: carDetails.inputCarModel,
+            year: carDetails.inputCarYear,
+            color: carDetails.inputCarColor,
+            seats: carDetails.inputCarSeats,
+            fuel_type: carDetails.inputCarFuelType,
+            mileage: carDetails.inputCarMileage,
+            rental_rate: parseFloat(carDetails.inputCarRent).toFixed(2),
             is_available: true,
             image: image ? image.name : "",
             admin_id: req.session.adminId,

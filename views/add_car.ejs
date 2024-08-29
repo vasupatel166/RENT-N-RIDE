@@ -5,28 +5,31 @@
     <body>
         <%- include("layouts/nav") %>
 
+        <% let condition = !carsData || (carsData && storeCarDetails_validation) %>
+
         <!-- Main -->
         <main>
             <section class="add-car-section">
-                <h2 class="heading"><%=carsData ? 'Update Car Details' : 'Add Car'%></h2>
+                <h2 class="heading"><%= condition ? 'Add Car' : 'Update Car Details' %></h2>
+
                 <form
-                    action="/<%= carsData ? 'updateCarDetails' : 'storeCarDetails' %>"
+                    action="/<%= condition ? 'store-car-details' : 'update-car-details' %>"
                     method="post"
                     enctype="multipart/form-data"
                     class="row g-3 add-car-form">
+
                     <div class="col-md-7">
-                        <label for="inputCarImage" class="form-label">Car
-                            Image</label>
+                        <label for="inputCarImage" class="form-label">Car Image</label>
                         <input class="form-control" type="file"
-                            accept="image/jpeg, image/png, image/jpg"
-                            id="inputCarImage" name="inputCarImage"
-                            value="<%= carsData ? carsData[0].image : '' %>">
+                            accept="image/*" id="inputCarImage" name="inputCarImage"
+                            value="">
                     </div>
+
                     <div class="col-md-5">
                         <%
-                        var imageName = "";
-                        if (carsData) {
-                        imageName = carsData[0].image.split('/').pop();
+                        let imageName = "";
+                        if (carsData && carsData[0].image) {
+                        imageName = carsData[0].image;
                         } else {
                         imageName = 'no-image.jpg';
                         }
@@ -37,12 +40,13 @@
                             class="rounded d-block img-thumbnail"
                             alt="Car Image">
                     </div>
+
                     <div class="col-md-4">
-                        <label for="inputCarMake" class="form-label">Car
-                            Make</label>
+                        <label for="inputCarMake" class="form-label">Car Make</label>
                         <select id="inputCarMake" name="inputCarMake"
                             class="form-select">
-                            <option>Choose Car Make</option>
+                            <option value="">Choose Car Make</option>
+
                             <% if (carsMakeData) { %>
                             <% carsMakeData.forEach((data) => { %>
                             <option value="<%= data._id %>">
@@ -53,9 +57,7 @@
                             <% carsData.forEach(item => {
                             if (Array.isArray(item.carsMake)) {
                             item.carsMake.forEach(data => { %>
-                            <option <%=carMakeId.toString() ===
-                                data._id.toString() ? 'selected' : '' %>
-                                value="<%= data._id %>">
+                            <option <%=carMakeId.toString() === data._id.toString() ? 'selected' : '' %> value="<%= data._id %>">
                                 <%= data.car_make_name %>
                             </option>
                             <% });
@@ -63,24 +65,18 @@
                             });
                             } %>
                         </select>
-
                     </div>
+
                     <div class="col-md-4">
-                        <label for="inputCarModel" class="form-label">Car
-                            Model</label>
-                        <select id="inputCarModel" name="inputCarModel"
-                            class="form-select" <% carModelId ? "" : 'disabled'
-                            %>>
-                            <option <% carModelId ? "disabled" :
-                                'selected disabled'
-                                %>>Choose Car Model</option>
-                            <% if(carModelId) { %>
+                        <label for="inputCarModel" class="form-label">Car Model</label>
+
+                        <select id="inputCarModel" name="inputCarModel" class="form-select" <% carModelId ? "" : 'disabled' %>>
+                            <option <% !carModelId ? 'selected disabled' : '' %> value="">Choose Car Model</option>
+                            <% if(carMakeId || carModelId) { %>
                             <% carsData.forEach(item => {
                             if (Array.isArray(item.carsModel)) {
                             item.carsModel.forEach(data => { %>
-                            <option <%=carModelId.toString() ===
-                                data._id.toString() ? 'selected' : '' %>
-                                value="<%= data._id %>">
+                            <option <%=carModelId.toString() === data._id.toString() ? 'selected' : '' %> value="<%= data._id %>"> 
                                 <%= data.car_model_name %>
                             </option>
                             <% });
@@ -89,84 +85,63 @@
                             } %>
                         </select>
                     </div>
+
                     <div class="col-md-4">
-                        <label for="inputCarYear" class="form-label">Car
-                            Year</label>
-                        <input type="number" class="form-control"
-                            id="inputCarYear" name="inputCarYear"
-                            placeholder="Enter Car Year"
-                            value="<%= carsData ? carsData[0].year : '' %>">
+                        <label for="inputCarYear" class="form-label">Car Year</label>
+                        <input type="number" class="form-control" id="inputCarYear" name="inputCarYear"
+                            placeholder="Enter Car Year" value="<%= carsData ? carsData[0].year : '' %>">
                     </div>
+
                     <div class="col-md-4">
-                        <label for="inputCarColor" class="form-label">Car
-                            Color</label>
-                        <input type="text" class="form-control"
-                            id="inputCarColor" name="inputCarColor"
-                            placeholder="Enter Car Color"
-                            value="<%= carsData ? carsData[0].color : '' %>">
+                        <label for="inputCarColor" class="form-label">Car Color</label>
+                        <input type="text" class="form-control" id="inputCarColor" name="inputCarColor"
+                            placeholder="Enter Car Color" value="<%= carsData ? carsData[0].color : "" %>">
                     </div>
+
                     <div class="col-md-4">
-                        <label for="inputCarSeats" class="form-label">Car
-                            Seats</label>
-                        <input type="number" class="form-control"
-                            id="inputCarSeats" name="inputCarSeats"
-                            placeholder="Enter number of seats"
-                            value="<%= carsData ? carsData[0].seats : '' %>">
+                        <label for="inputCarSeats" class="form-label">Car Seats</label>
+                        <input type="number" class="form-control" id="inputCarSeats" name="inputCarSeats"
+                            placeholder="Enter number of seats" value="<%= carsData ? carsData[0].seats : '' %>">
                     </div>
+
                     <div class="col-md-4">
-                        <label for="inputCarFuelType" class="form-label">Car
-                            Fuel Type</label>
-                        <select id="inputCarFuelType" class="form-select"
-                            name="inputCarFuelType">
-                            <option>Choose Fuel Type</option>
-                            <option <%=carsData && carsData[0].fuel_type ==
-                                'Gasoline' ? 'selected' : '' %>
-                                value="Gasoline">Gasoline</option>
-                            <option <%=carsData && carsData[0].fuel_type ==
-                                'Diesel' ? 'selected' : '' %>
-                                value="Diesel">Diesel</option>
-                            <option <%=carsData && carsData[0].fuel_type ==
-                                'EV' ? 'selected' : '' %>
-                                value="EV">EV</option>
-                            <option <%=carsData && carsData[0].fuel_type ==
-                                'Hybrid' ? 'selected' : '' %>
-                                value="Hybrid">Hybrid</option>
-                            <option <%=carsData && carsData[0].fuel_type ==
-                                'Plugin Hybrid' ? 'selected' : '' %>
-                                value="Plugin Hybrid">Plugin Hybrid</option>
+                        <label for="inputCarFuelType" class="form-label">Car Fuel Type</label>
+
+                        <select id="inputCarFuelType" class="form-select" name="inputCarFuelType">
+                            <option value="">Choose Fuel Type</option>
+                            <option <%=carsData && carsData[0].fuel_type == 'Gasoline' ? 'selected' : '' %> value="Gasoline">Gasoline</option>
+                            <option <%=carsData && carsData[0].fuel_type == 'Diesel' ? 'selected' : '' %> value="Diesel">Diesel</option>
+                            <option <%=carsData && carsData[0].fuel_type == 'EV' ? 'selected' : '' %> value="EV">EV</option>
+                            <option <%=carsData && carsData[0].fuel_type == 'Hybrid' ? 'selected' : '' %> value="Hybrid">Hybrid</option>
+                            <option <%=carsData && carsData[0].fuel_type == 'Plugin Hybrid' ? 'selected' : '' %> value="Plugin Hybrid">Plugin Hybrid</option>
                         </select>
                     </div>
+
                     <div class="col-md-4">
-                        <label for="inputCarMileage" class="form-label">Car
-                            Mileage</label>
-                        <input type="number" class="form-control"
-                            id="inputCarMileage" name="inputCarMileage"
-                            placeholder="Enter kms driven"
-                            value="<%= carsData ? carsData[0].mileage : '' %>">
+                        <label for="inputCarMileage" class="form-label">Car Mileage</label>
+                        <input type="number" class="form-control" id="inputCarMileage" name="inputCarMileage" 
+                            placeholder="Enter kms driven" value="<%= carsData ? carsData[0].mileage : '' %>">
                     </div>
                     <div class="col-md-4">
-                        <label for="inputCarRent" class="form-label">Car
-                            Rent</label>
-                        <input type="number" class="form-control"
-                            id="inputCarRent" name="inputCarRent"
-                            placeholder="Enter car rent per day"
-                            value="<%= carsData ? carsData[0].rental_rate : '' %>">
+                        <label for="inputCarRent" class="form-label">Car Rent</label>
+                        <input type="text" class="form-control" id="inputCarRent" name="inputCarRent"
+                            placeholder="Enter car rent per day" value="<%= carsData ? carsData[0].rental_rate : '' %>">
                     </div>
 
                     <!-- Error message -->
-                    <div class="mb-3 text-center">
-                        <% if (car_error) { %>
-                        <div class="alert alert-danger"><%= car_error %></div>
-                        <% } %>
+                    <div class="col-12 text-left mt-4">
+                        <p class="text-danger"><%= car_error %></p>
                     </div>
+
 
                     <div class="col-12 text-center mt-4 mb-4">
                         <button type="submit" class="btn btn-primary"
                             <% if(carMakeId) { %>
                             name="carId" value="<%= carMakeId %>"
                             <% } %>
-                            ><%= carsData ? 'Update Car' : 'Add Car' %></button>
+                            ><%= condition ? 'Add Car' : 'Update Car' %></button>
                     </div>
+
                 </form>
             </section>
         </main>
@@ -187,9 +162,6 @@
                 let carMakeId = "";
       
                 carsImageInput.addEventListener('change', (e) => {
-
-                    console.log("change image");
-
                     carsImage.src = URL.createObjectURL(carsImageInput.files[0]);
                 })
 
@@ -199,6 +171,9 @@
                     if(carsMakeInput.value != ""){
                         carMakeId = carsMakeInput.value;
                         carsModelInput.disabled = false;
+                    }
+                    else{
+                        carsModelInput.innerHTML = '<option value="">Choose Car Model</option>';
                     }
                   
                     console.log("Car Make Changed", carMakeId);

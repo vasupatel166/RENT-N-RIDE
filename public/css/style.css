@@ -182,12 +182,12 @@ a {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 25px;
+  gap: 10px;
 }
 
 .car-card {
   width: 50%;
-  max-width: 350px;
+  max-width: 360px;
   height: 460px;
   margin-bottom: 30px;
   padding: 20px;

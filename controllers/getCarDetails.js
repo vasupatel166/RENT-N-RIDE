@@ -3,7 +3,6 @@ const CarsMake = require("../models/CarsMake");
 const CarsModel = require("../models/CarsModel");
 const Customers = require("../models/Customers");
 const Invoices = require("../models/Invoices");
-const CarRentals = require("../models/CarRentals");
 const downloadReport = require("./downloadReport");
 
 module.exports = async (req, res, { route, getCarMakes }) => {
@@ -14,8 +13,6 @@ module.exports = async (req, res, { route, getCarMakes }) => {
     let carId = req.body.carId;
     let isEditCar = false;
     let report_type = req.body.report_type;
-
-    console.log("Car Id :", carId);
 
     if (report_type) {
         req_route = "reportPage"
@@ -32,7 +29,7 @@ module.exports = async (req, res, { route, getCarMakes }) => {
         isEditCar = true;
     }
 
-    console.log(req_route, isEditCar);
+    console.log(`Route : ${req_route}, isEditCar : ${isEditCar}`);
 
     switch (req_route) {
 
@@ -43,8 +40,7 @@ module.exports = async (req, res, { route, getCarMakes }) => {
                     const carsMakeData = await CarsMake.find({});
 
                     if (carsMakeData) {
-                        // console.log(`Cars Make data :,${carsMakeData}`);
-                        res.render('add_car', { carsMakeData: carsMakeData, carsData: "", carMakeId: "", carModelId: "" });
+                        res.render('add_car', { carsMakeData: carsMakeData, carsData: "", carMakeId: "", carModelId: "", storeCarDetails_validation: false, car_error: "" });
                     } else {
                         console.error("Cars Make Data Not Found !!!");
                         res.render('add_car');
@@ -85,15 +81,12 @@ module.exports = async (req, res, { route, getCarMakes }) => {
                     carsData = await Cars.find({});
                 }
 
-                // console.log("Cars Data : ", carsData);
-
                 const result = [];
 
                 for (const car of carsData) {
 
                     const carsMake = !isEditCar ? await CarsMake.findById({ _id: car.car_make_id }) : await CarsMake.find({});
                     const carsModel = !isEditCar ? await CarsModel.findById({ _id: car.car_model_id }) : await CarsModel.find({ car_make_id: car.car_make_id });
-                    console.log("Cars Model :", carsModel);
 
                     const carDetails = {
                         _id: car._id,
@@ -115,19 +108,19 @@ module.exports = async (req, res, { route, getCarMakes }) => {
                 carsData.forEach(item => {
                     carMakeId = item.car_make_id;
                     carModelId = item.car_model_id;
-                    // console.log(carMakeId);
                 })
 
                 if (result) {
-                    isEditCar ? res.render('add_car', { carsData: result, carMakeId: carMakeId, carModelId: carModelId, carsMakeData: "" }) : res.render('cars_on_rent', { carsData: result });
+                    isEditCar ? res.render('add_car', { carsData: result, carMakeId: carMakeId, carModelId: carModelId, carsMakeData: "", storeCarDetails_validation: false, car_error: "" }) : res.render('cars_on_rent', { carsData: result });
                 } else {
-                    console.error("Cars Data Not Found !!!");
-                    res.render('add_car');
+                    console.log("No Cars On Rent !!!");
+                    res.render('add_car', { carsData: "", carMakeId: "", carModelId: "", storeCarDetails_validation: false, car_error: "" });
                 }
 
             } catch (error) {
                 console.log(error);
             }
+
             break;
 
         case "reportPage":
@@ -195,6 +188,7 @@ module.exports = async (req, res, { route, getCarMakes }) => {
                 console.log(error);
             }
             break;
+
         default:
             console.error("Error : Not get the route");
             break;
